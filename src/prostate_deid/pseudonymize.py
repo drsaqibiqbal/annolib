@@ -30,6 +30,11 @@ from .core import AuditEntry, Sample, Transform
 
 _DATE_FIELDS_DEFAULT = ["StudyDate", "SeriesDate", "AcquisitionDate", "ContentDate"]
 _ID_FIELDS_DEFAULT = ["PatientID"]
+# UIDs are themselves identifiers (they encode institution/device roots and
+# are globally unique per study), so they must be regenerated -- but
+# consistently, so intra-study cross-references (a series pointing at its
+# study) survive. Same source UID -> same new UID, deterministically.
+_UID_FIELDS_DEFAULT = ["StudyInstanceUID", "SeriesInstanceUID", "SOPInstanceUID"]
 
 # Bound consistent date shift to a wide but finite range so shifted dates
 # can't accidentally collide with a plausible real date range far outside
@@ -89,6 +94,21 @@ def _shift_date_str(value: str, shift_days: int, fmt: str = "%Y%m%d") -> str:
     return shifted.strftime(fmt)
 
 
+def _derive_uid(source_uid: str, secret: str, root: str = "2.25") -> str:
+    """Deterministically derive a replacement DICOM UID from a source UID.
+
+    Uses the 2.25 root (a registered arc for UUID-derived UIDs) followed by
+    an integer derived from HMAC(secret, source_uid), so the same source UID
+    always maps to the same replacement -- preserving intra-study references
+    -- without leaking the original institution/device UID roots.
+    """
+    digest = hmac.new(secret.encode("utf-8"), source_uid.encode("utf-8"), hashlib.sha256).hexdigest()
+    # Take 32 hex chars (128 bits) as an integer, matching UUID-derived width.
+    numeric = int(digest[:32], 16)
+    uid = f"{root}.{numeric}"
+    return uid[:64]  # DICOM UIDs are capped at 64 characters
+
+
 class Pseudonymize(Transform):
     """Remaps patient IDs and shifts date fields consistently per patient.
 
@@ -106,6 +126,7 @@ class Pseudonymize(Transform):
         mapping_store: "MappingStore | str | Path",
         id_fields: Optional[list] = None,
         date_fields: Optional[list] = None,
+        uid_fields: Optional[list] = None,
         **kwargs: Any,
     ):
         Transform.__init__(self, **kwargs)
@@ -114,6 +135,7 @@ class Pseudonymize(Transform):
         self.mapping_store = mapping_store
         self.id_fields = id_fields or list(_ID_FIELDS_DEFAULT)
         self.date_fields = date_fields or list(_DATE_FIELDS_DEFAULT)
+        self.uid_fields = uid_fields if uid_fields is not None else list(_UID_FIELDS_DEFAULT)
 
     def apply(self, sample: Sample) -> Sample:
         if sample.dicom_meta is None:
@@ -163,6 +185,19 @@ class Pseudonymize(Transform):
                             flagged_for_review=True,
                         )
                     )
+
+        for field_name in self.uid_fields:
+            if field_name in sample.dicom_meta:
+                sample.dicom_meta[field_name] = _derive_uid(
+                    sample.dicom_meta[field_name], self.mapping_store.secret
+                )
+                sample.log(
+                    AuditEntry(
+                        step="pseudonymize",
+                        action="regenerated_uid",
+                        detail=field_name,
+                    )
+                )
 
         self.mapping_store.save()
         return sample

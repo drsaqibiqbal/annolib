@@ -41,6 +41,14 @@ class Sample:
     dicom_meta: Optional[Dict[str, Any]] = None
     mask: Optional[np.ndarray] = None
     audit: List[AuditEntry] = field(default_factory=list)
+    # The originating pydicom FileDataset, when the Sample was loaded from a
+    # real .dcm via prostate_deid.dicom_io.load_sample. Transforms that need
+    # to reflect changes back into the actual DICOM object (tag deletion, UID
+    # regeneration, pixel write-back) use this; it is None for Samples built
+    # by hand from a plain dict, so existing dict-only workflows are
+    # unaffected.
+    source_dataset: Optional[Any] = None
+    image_dirty: bool = False  # set True when a Transform mutates pixel data
 
     def log(self, entry: AuditEntry) -> None:
         self.audit.append(entry)

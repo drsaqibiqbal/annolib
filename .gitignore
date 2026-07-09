@@ -17,3 +17,7 @@ site/
 # Example/demo run outputs.
 example_bundle/
 example_mapping.json
+
+# Dashboard runtime scratch (uploaded/processed DICOMs stay local).
+._pd_tmp/
+*.dcm

@@ -53,6 +53,7 @@ class BurnedInTextRedact(Transform):
         confidence_threshold: float = 0.6,
         scrub_overlays: bool = True,
         cross_reference_metadata: bool = True,
+        require_ocr: bool = False,
         **kwargs: Any,
     ):
         super().__init__(**kwargs)
@@ -60,11 +61,50 @@ class BurnedInTextRedact(Transform):
         self.confidence_threshold = confidence_threshold
         self.scrub_overlays = scrub_overlays
         self.cross_reference_metadata = cross_reference_metadata
+        # If False (default), a missing OCR backend degrades to a flagged,
+        # non-fatal audit entry instead of raising -- so a whole pipeline (and
+        # a dashboard) does not crash just because tesseract isn't installed.
+        # Set True to hard-fail when OCR can't run, for pipelines that treat
+        # burned-in redaction as mandatory.
+        self.require_ocr = require_ocr
 
     def apply(self, sample: Sample) -> Sample:
-        detections = self._detect_phi_regions(sample.image, sample)
+        try:
+            detections = self._detect_phi_regions(sample.image, sample)
+        except ImportError as exc:
+            if self.require_ocr:
+                raise
+            sample.log(
+                AuditEntry(
+                    step="burned_in_phi",
+                    action="ocr_unavailable",
+                    detail=(
+                        "OCR backend not installed; burned-in pixel text was "
+                        f"NOT scanned ({exc}). Install prostate-deid[ocr] + a "
+                        "tesseract binary, or review pixel data manually."
+                    ),
+                    flagged_for_review=True,
+                )
+            )
+            return sample
+
+        # Honour the DICOM BurnedInAnnotation flag: if the header asserts the
+        # pixels contain no burned-in text and OCR found nothing, record that
+        # positively; if the header says YES but OCR found nothing, flag it.
+        annotation_flag = (sample.dicom_meta or {}).get("BurnedInAnnotation")
+        if not detections and str(annotation_flag).upper() == "YES":
+            sample.log(
+                AuditEntry(
+                    step="burned_in_phi",
+                    action="annotation_flag_yes_no_ocr_hit",
+                    detail="Header says BurnedInAnnotation=YES but OCR found no PHI region; manual review advised.",
+                    flagged_for_review=True,
+                )
+            )
+
         for bbox, text, conf in detections:
             self._black_out(sample.image, bbox)
+            sample.image_dirty = True
             sample.log(
                 AuditEntry(
                     step="burned_in_phi",

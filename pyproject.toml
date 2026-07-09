@@ -39,7 +39,7 @@ dependencies = [
 [project.optional-dependencies]
 dev = ["pytest>=7.0", "ruff", "mypy"]
 ocr = ["pytesseract>=0.3.10", "spacy>=3.7", "Pillow>=10.0"]
-dashboard = ["streamlit>=1.30"]
+dashboard = ["streamlit>=1.30", "pydicom>=2.4"]
 docs = ["mkdocs>=1.5", "mkdocstrings[python]>=0.24"]
 
 [project.urls]

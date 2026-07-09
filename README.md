@@ -24,20 +24,58 @@ Every transform appends a structured `AuditEntry` (step, action, detail,
 confidence, `flagged_for_review`) instead of mutating data silently, so a
 pipeline run produces one machine-readable report of exactly what changed.
 
+## Quickest start — de-identify a real DICOM in one call
+
 ```python
-from prostate_deid import Compose, DicomTagScrub, Pseudonymize, OrganMask, Sample
+from prostate_deid import anonymize_dicom
+
+audit = anonymize_dicom(
+    "study.dcm",
+    "study_deidentified.dcm",
+    mapping_store="/secure/institution-only/mapping.json",  # keep OUTSIDE the output tree
+)
+for entry in audit:
+    print(entry)
+```
+
+This reads the real `.dcm` with pydicom, pseudonymizes the patient ID and
+dates, regenerates the Study/Series/SOP UIDs consistently, scrubs the header
+per HIPAA Safe Harbor, strips every private tag, attempts burned-in text
+redaction (skipped-and-flagged if no OCR backend is installed), marks the file
+`PatientIdentityRemoved=YES`, and writes a valid de-identified DICOM.
+
+## Interactive dashboard
+
+```bash
+pip install prostate-deid[dashboard]
+streamlit run dashboard/anonymize_app.py
+```
+
+Upload a DICOM and see before/after header, before/after image, live metrics,
+the full audit trail, a capability comparison, and a download of the
+de-identified file — nothing leaves your machine.
+
+## Custom pipeline (the composable API)
+
+```python
+from prostate_deid import Compose, DicomTagScrub, Pseudonymize, OrganMask, load_sample, save_sample
 from prostate_deid.organ_mask import WHOLE_GLAND
 
+sample = load_sample("study.dcm")
 pipeline = Compose([
-    DicomTagScrub(profile="hipaa_safe_harbor", always_apply=True),
+    # Pseudonymize MUST precede DicomTagScrub, and DicomTagScrub must exclude
+    # the fields Pseudonymize remapped (see the ordering note in the docs).
     Pseudonymize(mapping_store="/secure/institution-only/mapping.json", always_apply=True),
-    OrganMask(keep_labels=WHOLE_GLAND, always_apply=True),
+    DicomTagScrub(
+        profile="hipaa_safe_harbor",
+        exclude_tags=["PatientID", "StudyDate", "SeriesDate",
+                      "StudyInstanceUID", "SeriesInstanceUID", "SOPInstanceUID"],
+        always_apply=True,
+    ),
+    OrganMask(keep_labels=WHOLE_GLAND, always_apply=True),  # needs sample.mask set
 ])
-
-result = pipeline(sample)  # sample: prostate_deid.Sample
-
-for entry in result.audit:
-    print(entry)
+result = pipeline(sample)
+save_sample(result, "study_deidentified.dcm")
 ```
 
 ## Installation

@@ -12,26 +12,37 @@ wrong about an unrecognized private tag is worse than dropping it.
 
 from __future__ import annotations
 
+import re
 from typing import Any, Dict, List, Optional
 
 from .core import AuditEntry, Sample, Transform
 from .profiles import resolve_profile
 
+# Matches the "(GGGG,EEEE)" tag-string form that dicom_io uses to surface
+# private elements in dicom_meta.
+_TAG_STRING_RE = re.compile(r"^\(([0-9A-Fa-f]{4}),([0-9A-Fa-f]{4})\)$")
 
-def _is_private_tag(dicom_meta: Dict[str, Any], keyword: str) -> bool:
-    """Best-effort private-tag detection for a plain-dict dicom_meta.
 
-    When dicom_meta was built from a pydicom Dataset, callers should prefer
-    passing tag tuples (group, element) instead of keywords for private
-    elements, since private tags have no stable keyword. This helper treats
-    any key that pydicom's dictionary does not recognize as "private" by
-    convention -- i.e. an odd group number, or a key not in the public
-    dictionary.
+def _is_private_tag(dicom_meta: Dict[str, Any], key: str) -> bool:
+    """Detect whether a dicom_meta key names a private (odd-group) element.
+
+    Handles two key forms:
+      * "(GGGG,EEEE)" tag strings emitted by prostate_deid.dicom_io -- a
+        private element has an ODD group number (DICOM PS3.5); this is the
+        authoritative check.
+      * bare keywords (dict-only workflows) -- fall back to "not in the
+        public DICOM dictionary", which is a weaker heuristic but the best
+        available without a real tag.
     """
+    match = _TAG_STRING_RE.match(key)
+    if match:
+        group = int(match.group(1), 16)
+        return group % 2 == 1  # odd group == private
+
     try:
         from pydicom.datadict import dictionary_has_tag
 
-        return not dictionary_has_tag(keyword)
+        return not dictionary_has_tag(key)
     except Exception:
         return False
 

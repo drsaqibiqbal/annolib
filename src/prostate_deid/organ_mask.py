@@ -67,6 +67,7 @@ class OrganMask(Transform):
         outside = ~keep
 
         sample.image = np.where(outside, self.fill_value, sample.image)
+        sample.image_dirty = True
 
         label_desc = ",".join(
             _LABEL_NAMES.get(label, str(label)) for label in sorted(self.keep_labels)
