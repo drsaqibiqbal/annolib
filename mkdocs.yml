@@ -1,6 +1,6 @@
 site_name: prostate-deid
 site_description: De-identification and anatomical masking for prostate MRI
-repo_url: https://github.com/<user>/prostate-deid
+repo_url: https://github.com/drsaqibiqbal/annolib
 theme:
   name: readthedocs
 

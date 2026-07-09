@@ -25,5 +25,5 @@ decision behind `Pseudonymize` before you use it on real data.
 !!! warning "Compliance disclaimer"
     Using this library does not, by itself, constitute HIPAA or GDPR
     compliance. It is a tool toward compliance, not a certification of it.
-    See the [README](https://github.com/<user>/prostate-deid#compliance-disclaimer)
+    See the [README](https://github.com/drsaqibiqbal/annolib#compliance-disclaimer)
     for the full disclaimer.

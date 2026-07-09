@@ -43,9 +43,9 @@ dashboard = ["streamlit>=1.30"]
 docs = ["mkdocs>=1.5", "mkdocstrings[python]>=0.24"]
 
 [project.urls]
-Homepage = "https://github.com/<user>/prostate-deid"
-Repository = "https://github.com/<user>/prostate-deid"
-"Bug Tracker" = "https://github.com/<user>/prostate-deid/issues"
+Homepage = "https://github.com/drsaqibiqbal/annolib"
+Repository = "https://github.com/drsaqibiqbal/annolib"
+"Bug Tracker" = "https://github.com/drsaqibiqbal/annolib/issues"
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/prostate_deid"]

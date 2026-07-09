@@ -32,4 +32,4 @@
 `mkdocstrings[python]` to your docs build environment
 (`pip install mkdocs mkdocstrings[python]`) for it to render docstrings
 automatically; until then, refer to the source directly at
-[`src/prostate_deid/`](https://github.com/<user>/prostate-deid/tree/main/src/prostate_deid).*
+[`src/prostate_deid/`](https://github.com/drsaqibiqbal/annolib/tree/main/src/prostate_deid).*

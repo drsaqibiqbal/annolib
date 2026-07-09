@@ -47,5 +47,5 @@ Then launch the dashboard:
 streamlit run dashboard/review_app.py -- --bundle ./review_bundle
 ```
 
-See [`examples/run_pipeline_and_export.py`](https://github.com/<user>/prostate-deid/blob/main/examples/run_pipeline_and_export.py)
+See [`examples/run_pipeline_and_export.py`](https://github.com/drsaqibiqbal/annolib/blob/main/examples/run_pipeline_and_export.py)
 for a runnable end-to-end script on synthetic data.
