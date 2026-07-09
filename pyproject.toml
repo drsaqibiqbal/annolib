@@ -1,0 +1,54 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "prostate-deid"
+version = "0.1.0"
+description = "De-identification and anatomical masking for prostate MRI"
+readme = "README.md"
+license = { text = "MIT" }
+requires-python = ">=3.9"
+authors = [
+    { name = "Saqib Iqbal" },
+]
+keywords = [
+    "medical imaging",
+    "de-identification",
+    "DICOM",
+    "prostate MRI",
+    "privacy",
+    "masking",
+]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Scientific/Engineering :: Medical Science Apps.",
+]
+dependencies = [
+    "numpy>=1.26",
+    "pydicom>=2.4",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=7.0", "ruff", "mypy"]
+ocr = ["pytesseract>=0.3.10", "spacy>=3.7", "Pillow>=10.0"]
+dashboard = ["streamlit>=1.30"]
+docs = ["mkdocs>=1.5", "mkdocstrings[python]>=0.24"]
+
+[project.urls]
+Homepage = "https://github.com/<user>/prostate-deid"
+Repository = "https://github.com/<user>/prostate-deid"
+"Bug Tracker" = "https://github.com/<user>/prostate-deid/issues"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/prostate_deid"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

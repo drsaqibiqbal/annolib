@@ -1,0 +1,19 @@
+__pycache__/
+*.pyc
+*.egg-info/
+.venv/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+build/
+dist/
+site/
+*.json.bak
+
+# Never commit anything that could contain a real pseudonymization mapping key.
+*mapping*.json
+!tests/**/mapping*.json
+
+# Example/demo run outputs.
+example_bundle/
+example_mapping.json
