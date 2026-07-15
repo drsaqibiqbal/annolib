@@ -44,6 +44,37 @@ per HIPAA Safe Harbor, strips every private tag, attempts burned-in text
 redaction (skipped-and-flagged if no OCR backend is installed), marks the file
 `PatientIdentityRemoved=YES`, and writes a valid de-identified DICOM.
 
+## Preprocessing: DICOM → NIfTI + intensity normalization
+
+The same pipeline handles the standard research preprocessing chain. NIfTI is
+written by a self-contained NIfTI-1 writer (no extra dependency), and it is
+de-identification-adjacent by nature: the NIfTI header carries essentially no
+patient metadata, so the DICOM header PHI surface does not survive the export.
+
+```python
+from prostate_deid import (Compose, Pseudonymize, DicomTagScrub,
+                           IntensityNormalize, load_sample, save_nifti)
+
+sample = load_sample("study.dcm")
+pipe = Compose([
+    Pseudonymize(mapping_store="/secure/key.json", always_apply=True),
+    DicomTagScrub(profile="hipaa_safe_harbor",
+                  exclude_tags=["PatientID","StudyDate","StudyInstanceUID",
+                                "SeriesInstanceUID","SOPInstanceUID"], always_apply=True),
+    IntensityNormalize(method="robust", always_apply=True),   # RARN
+])
+save_nifti(pipe(sample), "study.nii")
+```
+
+`IntensityNormalize` implements **Robust Anatomy-Referenced Normalization
+(RARN)** — it standardizes intensities using robust statistics computed from a
+reference region (the prostate gland/zonal mask, or the Otsu foreground),
+making scans comparable across scanners; the exact affine `(mu, sigma)` is
+recorded in the audit trail so the mapping is reproducible and invertible. See
+[`prostate_deid_NORMALIZATION_MATH.md`](../prostate_deid_NORMALIZATION_MATH.md)
+for the full mathematics. Modes: `robust` (default), `zscore`, `minmax`,
+`zone_aware`.
+
 ## Interactive dashboard
 
 ```bash
