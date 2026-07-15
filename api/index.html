@@ -1,0 +1,994 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <link rel="shortcut icon" href="../img/favicon.ico" />
+    <title>API Reference - prostate-deid</title>
+    <link rel="stylesheet" href="../css/theme.css" />
+    <link rel="stylesheet" href="../css/theme_extra.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
+        <link href="../assets/_mkdocstrings.css" rel="stylesheet" />
+    
+      <script>
+        // Current page data
+        var mkdocs_page_name = "API Reference";
+        var mkdocs_page_input_path = "api.md";
+        var mkdocs_page_url = null;
+      </script>
+    
+    <!--[if lt IE 9]>
+      <script src="../js/html5shiv.min.js"></script>
+    <![endif]-->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+      <script>hljs.highlightAll();</script> 
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+          <a href=".." class="icon icon-home"> prostate-deid
+        </a><div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../search.html" method="get">
+      <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="..">Home</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../quickstart/">Quickstart</a>
+                </li>
+              </ul>
+              <ul class="current">
+                <li class="toctree-l1 current"><a class="reference internal current" href="#">API Reference</a>
+    <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#core">Core</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#prostate_deid.core">core</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#prostate_deid.core.AuditEntry">AuditEntry</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#prostate_deid.core.Compose">Compose</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#prostate_deid.core.Sample">Sample</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#prostate_deid.core.Transform">Transform</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#dicomtagscrub">DicomTagScrub</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#prostate_deid.dicom_scrub">dicom_scrub</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#prostate_deid.dicom_scrub.DicomTagScrub">DicomTagScrub</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#pseudonymize">Pseudonymize</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#prostate_deid.pseudonymize">pseudonymize</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#prostate_deid.pseudonymize.MappingStore">MappingStore</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#prostate_deid.pseudonymize.Pseudonymize">Pseudonymize</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#burnedintextredact">BurnedInTextRedact</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#prostate_deid.burned_in_text">burned_in_text</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#prostate_deid.burned_in_text.BurnedInTextRedact">BurnedInTextRedact</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#organmask">OrganMask</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#prostate_deid.organ_mask">organ_mask</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#prostate_deid.organ_mask.OrganMask">OrganMask</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#export_review_bundle">export_review_bundle</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#prostate_deid.export">export</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#prostate_deid.export.export_review_bundle">export_review_bundle</a>
+    </li>
+    </ul>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../pseudonymization/">Anonymization vs. Pseudonymization</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../dashboard/">Reviewer QA Dashboard</a>
+                </li>
+              </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+      <nav class="wy-nav-top" role="navigation" aria-label="Mobile navigation menu">
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="..">prostate-deid</a>
+        
+      </nav>
+      <div class="wy-nav-content">
+        <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href=".." class="icon icon-home" aria-label="Docs"></a></li>
+      <li class="breadcrumb-item active">API Reference</li>
+    <li class="wy-breadcrumbs-aside">
+          <a href="https://github.com/drsaqibiqbal/annolib/edit/master/docs/api.md" class="icon icon-github"> Edit on GitHub</a>
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+            <div class="section" itemprop="articleBody">
+              
+                <h1 id="api-reference">API Reference</h1>
+<h2 id="core">Core</h2>
+
+
+<div class="doc doc-object doc-module">
+
+
+
+<a id="prostate_deid.core"></a>
+    <div class="doc doc-contents first">
+
+        <p>Core primitives: Sample, AuditEntry, Transform, Compose.</p>
+<p>Mirrors the Transform/Compose contract established by volumetric augmentation
+libraries (e.g. Bio-Volumentations), so users already familiar with that
+pattern can adopt this library directly. The key difference: every Transform
+here appends to a shared audit trail instead of mutating data silently.</p>
+
+
+
+
+
+
+
+
+
+
+<div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+<div class="doc doc-object doc-class">
+
+
+
+<h2 id="prostate_deid.core.AuditEntry" class="doc doc-heading">
+            <code>AuditEntry</code>
+
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-dataclass"><code>dataclass</code></small>
+  </span>
+
+</h2>
+
+
+    <div class="doc doc-contents ">
+
+
+
+        <p>One record of a single change made to a Sample by a Transform.</p>
+
+
+
+
+
+
+
+
+
+
+<div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+
+
+
+  </div>
+
+    </div>
+
+
+</div>
+
+<div class="doc doc-object doc-class">
+
+
+
+<h2 id="prostate_deid.core.Compose" class="doc doc-heading">
+            <code>Compose</code>
+
+
+</h2>
+
+
+    <div class="doc doc-contents ">
+
+
+
+        <p>Runs a list of Transforms in sequence, accumulating one shared audit trail.</p>
+
+
+
+
+
+
+
+
+
+
+<div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+
+
+
+  </div>
+
+    </div>
+
+
+</div>
+
+<div class="doc doc-object doc-class">
+
+
+
+<h2 id="prostate_deid.core.Sample" class="doc doc-heading">
+            <code>Sample</code>
+
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-dataclass"><code>dataclass</code></small>
+  </span>
+
+</h2>
+
+
+    <div class="doc doc-contents ">
+
+
+
+        <p>The unit that flows through a pipeline.</p>
+<p>image: volumetric array, convention CZYX(T).
+dicom_meta: parsed DICOM header fields (e.g. from pydicom.Dataset), as a
+    plain dict so Transforms don't depend on pydicom internals directly.
+mask: anatomical mask (e.g. prostate gland / zone / lesion), same spatial
+    convention as image, values distinguish region labels (0 = outside).</p>
+
+
+
+
+
+
+
+
+
+
+<div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+
+
+
+  </div>
+
+    </div>
+
+
+</div>
+
+<div class="doc doc-object doc-class">
+
+
+
+<h2 id="prostate_deid.core.Transform" class="doc doc-heading">
+            <code>Transform</code>
+
+
+</h2>
+
+
+    <div class="doc doc-contents ">
+            <p class="doc doc-class-bases">
+              Bases: <code><span title="abc.ABC">ABC</span></code></p>
+
+
+
+        <p>Base class for all de-identification / masking operations.</p>
+
+
+
+
+
+
+
+
+
+
+<div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+
+
+
+  </div>
+
+    </div>
+
+
+</div>
+
+
+
+
+  </div>
+
+    </div>
+
+</div><h2 id="dicomtagscrub">DicomTagScrub</h2>
+
+
+<div class="doc doc-object doc-module">
+
+
+
+<a id="prostate_deid.dicom_scrub"></a>
+    <div class="doc doc-contents first">
+
+        <p>Deterministic DICOM metadata scrubbing.</p>
+<p>Delegates DICOM I/O to pydicom; this module only encodes policy: which named
+profile applies, and how private (vendor-specific) tags are handled.</p>
+<p>Private tags are a known blind spot -- standard confidentiality profiles only
+cover the public DICOM dictionary, and scanner manufacturers routinely embed
+PHI in private, undocumented fields. Default policy here is to strip <em>all</em>
+private tags rather than attempt to parse unknown content, since guessing
+wrong about an unrecognized private tag is worse than dropping it.</p>
+
+
+
+
+
+
+
+
+
+
+<div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+<div class="doc doc-object doc-class">
+
+
+
+<h2 id="prostate_deid.dicom_scrub.DicomTagScrub" class="doc doc-heading">
+            <code>DicomTagScrub</code>
+
+
+</h2>
+
+
+    <div class="doc doc-contents ">
+            <p class="doc doc-class-bases">
+              Bases: <code><a class="autorefs autorefs-internal" title="Transform (prostate_deid.core.Transform)" href="#prostate_deid.core.Transform">Transform</a></code></p>
+
+
+
+        <p>Removes DICOM header fields according to a named profile.</p>
+
+
+<details class="profile" open>
+  <summary>"hipaa_safe_harbor", "dicom_ps3.15_basic", or any key registered</summary>
+  <p>in prostate_deid.profiles.PROFILES.</p>
+</details>        <p>extra_tags_to_remove: additional keywords to strip beyond the profile.
+exclude_tags: fields to keep even though the profile would otherwise
+    remove them. Use this when a Pseudonymize step earlier in the same
+    Compose pipeline has already remapped these fields (e.g.
+    exclude_tags=["PatientID", "StudyDate", "SeriesDate"]) -- without
+    this, DicomTagScrub would delete the pseudonymized values outright,
+    silently undoing the remap.
+strip_private_tags: if True (default), also remove every private
+    (vendor-specific, non-standard) tag found in dicom_meta -- this is
+    the library's explicit default policy, not an incidental behavior.</p>
+<p>Ordering note: run Pseudonymize <em>before</em> DicomTagScrub in your Compose
+pipeline, and pass the same field names to DicomTagScrub's
+exclude_tags -- otherwise DicomTagScrub's profile deletes the very
+fields Pseudonymize just remapped.</p>
+
+
+
+
+
+
+
+
+
+
+<div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+
+
+
+  </div>
+
+    </div>
+
+
+</div>
+
+
+
+
+  </div>
+
+    </div>
+
+</div><h2 id="pseudonymize">Pseudonymize</h2>
+
+
+<div class="doc doc-object doc-module">
+
+
+
+<a id="prostate_deid.pseudonymize"></a>
+    <div class="doc doc-contents first">
+
+        <p>Consistent patient ID remapping and date shifting.</p>
+<p>This module implements PSEUDONYMIZATION, not anonymization. A reversible
+mapping is deliberately retained -- per-patient ID substitution and a
+per-patient date-shift offset are both consistent across repeated calls for
+the same source ID, so that longitudinal research (e.g. PSA follow-up,
+repeat MRI across a treatment course) remains possible: scan A and scan B
+for the same patient still link to each other after processing.</p>
+<p>Under GDPR, retaining any mapping that could re-identify a patient -- even
+one held only by the originating institution, even encrypted -- makes this
+pseudonymization, a legally distinct category from anonymization with its
+own obligations (Art. 4(5), recital 26). This library does not claim to
+produce anonymized data, and the mapping store this class writes to must
+never be shipped alongside, or stored in the same repository/location as,
+the de-identified output.</p>
+
+
+
+
+
+
+
+
+
+
+<div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+<div class="doc doc-object doc-class">
+
+
+
+<h2 id="prostate_deid.pseudonymize.MappingStore" class="doc doc-heading">
+            <code>MappingStore</code>
+
+
+</h2>
+
+
+    <div class="doc doc-contents ">
+
+
+
+        <p>Reads/writes the patient_id -&gt; (pseudo_id, shift_days) mapping table.</p>
+<p>Intentionally simple (a local JSON file) rather than a database, so the
+file's location is an explicit, visible decision the caller makes -- and
+can point it somewhere outside the de-identified output tree, e.g. an
+encrypted institution-side volume.</p>
+
+
+
+
+
+
+
+
+
+
+<div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+
+
+
+  </div>
+
+    </div>
+
+
+</div>
+
+<div class="doc doc-object doc-class">
+
+
+
+<h2 id="prostate_deid.pseudonymize.Pseudonymize" class="doc doc-heading">
+            <code>Pseudonymize</code>
+
+
+</h2>
+
+
+    <div class="doc doc-contents ">
+            <p class="doc doc-class-bases">
+              Bases: <code><a class="autorefs autorefs-internal" title="Transform (prostate_deid.core.Transform)" href="#prostate_deid.core.Transform">Transform</a></code></p>
+
+
+
+        <p>Remaps patient IDs and shifts date fields consistently per patient.</p>
+
+
+<details class="mapping_store" open>
+  <summary>a MappingStore instance (or a path, which will be wrapped</summary>
+  <p>in one). Must point outside the output directory for de-identified
+images -- this class does not enforce that, it is a deployment
+responsibility documented here and in the README.</p>
+</details>        <p>id_fields / date_fields: dicom_meta keys to remap / shift. Unrecognized
+    or missing fields are skipped silently (not every study has every
+    field populated).</p>
+
+
+
+
+
+
+
+
+
+
+<div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+
+
+
+  </div>
+
+    </div>
+
+
+</div>
+
+
+
+
+  </div>
+
+    </div>
+
+</div><h2 id="burnedintextredact">BurnedInTextRedact</h2>
+
+
+<div class="doc doc-object doc-module">
+
+
+
+<a id="prostate_deid.burned_in_text"></a>
+    <div class="doc doc-contents first">
+
+        <p>Burned-in pixel PHI detection and redaction.</p>
+<p>Detects text baked into pixel data (OCR), classifies PHI vs. non-PHI (NER),
+and cross-references DICOM metadata (patient name, etc.) to catch entities a
+generic NER model wouldn't recognize on its own -- e.g. a name that isn't a
+common name in the NER model's training data, but does appear verbatim in
+this study's own PatientName field.</p>
+<p>Also scrubs DICOM overlay planes (0x60xx,3000), a separate bitmap layer from
+the main pixel data that is easy to forget precisely because it "is not the
+image" -- PHI has been found there in the wild (ultrasound/annotation
+overlays in particular).</p>
+<p>False negatives (missed PHI) and false positives (over-redaction) are not
+symmetric: a missed detection is a privacy incident, an over-redaction is a
+data-quality loss. Default thresholds bias toward flagging/redacting when
+uncertain, per that stated policy -- not a shrug-worthy parameter default.</p>
+<p>OCR/NER backends are optional dependencies (<code>pip install prostate-deid[ocr]</code>)
+so the core package stays lightweight for users who only need DICOM tag
+scrubbing or masking.</p>
+
+
+
+
+
+
+
+
+
+
+<div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+<div class="doc doc-object doc-class">
+
+
+
+<h2 id="prostate_deid.burned_in_text.BurnedInTextRedact" class="doc doc-heading">
+            <code>BurnedInTextRedact</code>
+
+
+</h2>
+
+
+    <div class="doc doc-contents ">
+            <p class="doc doc-class-bases">
+              Bases: <code><a class="autorefs autorefs-internal" title="Transform (prostate_deid.core.Transform)" href="#prostate_deid.core.Transform">Transform</a></code></p>
+
+
+
+        <p>Detects and blacks out burned-in PHI text in pixel data and overlays.</p>
+
+
+<details class="ocr_engine" open>
+  <summary>"tesseract" (via pytesseract) is the only backend wired up</summary>
+  <p>currently; pass a callable(image: np.ndarray) -&gt; List[(bbox, text)]
+to use a custom engine instead.</p>
+</details>        <p>confidence_threshold: detections below this NER confidence are still
+    redacted, but flagged_for_review=True -- biasing toward redaction
+    under uncertainty rather than silently letting a low-confidence hit
+    through unredacted.
+scrub_overlays: also scan and blackout DICOM overlay planes
+    (sample.dicom_meta["_overlays"], a list of boolean/uint8 arrays), not
+    just the main pixel array.</p>
+
+
+
+
+
+
+
+
+
+
+<div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+
+
+
+  </div>
+
+    </div>
+
+
+</div>
+
+
+
+
+  </div>
+
+    </div>
+
+</div><h2 id="organmask">OrganMask</h2>
+
+
+<div class="doc doc-object doc-module">
+
+
+
+<a id="prostate_deid.organ_mask"></a>
+    <div class="doc doc-contents first">
+
+        <p>Prostate-specific anatomical masking.</p>
+<p>Constrains an image to a segmented region -- whole gland, zonal
+(peripheral/transition zone), or a lesion ROI -- sharing the same
+mask-handling convention as augmentation-oriented dual transforms (image and
+mask are touched consistently), so masks produced here remain usable in a
+downstream augmentation pipeline built on the same convention.</p>
+<p>Mask label convention (uint8, single-channel, same spatial shape as image).
+Zone/lesion labels are mutually exclusive; WHOLE_GLAND is not a separate
+label painted in the mask but shorthand for "any prostate label" (i.e. the
+union of PZ, TZ, and lesion), since real segmentations typically label zones
+exclusively rather than also painting a redundant outer "gland" label:
+    0            = outside the gland (background)
+    2            = peripheral zone (PZ)
+    3            = transition zone (TZ)
+    4            = lesion / suspicious ROI
+Any subset of these labels may be present; labels not passed to <code>keep_labels</code>
+are treated as "outside" and zeroed along with label 0.</p>
+
+
+
+
+
+
+
+
+
+
+<div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+<div class="doc doc-object doc-class">
+
+
+
+<h2 id="prostate_deid.organ_mask.OrganMask" class="doc doc-heading">
+            <code>OrganMask</code>
+
+
+</h2>
+
+
+    <div class="doc doc-contents ">
+            <p class="doc doc-class-bases">
+              Bases: <code><a class="autorefs autorefs-internal" title="Transform (prostate_deid.core.Transform)" href="#prostate_deid.core.Transform">Transform</a></code></p>
+
+
+
+        <p>Zeroes out image voxels outside the requested prostate region(s).</p>
+
+
+<details class="keep_labels" open>
+  <summary>which mask label(s) to retain, e.g. WHOLE_GLAND (the</summary>
+  <p>default) to constrain to the entire gland (PZ + TZ + lesion), or
+(PERIPHERAL_ZONE, TRANSITION_ZONE) to keep both zones but exclude
+the lesion label specifically.</p>
+</details>        <p>fill_value: value written into voxels outside the kept region(s).</p>
+
+
+
+
+
+
+
+
+
+
+<div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+
+
+
+  </div>
+
+    </div>
+
+
+</div>
+
+
+
+
+  </div>
+
+    </div>
+
+</div><h2 id="export_review_bundle">export_review_bundle</h2>
+
+
+<div class="doc doc-object doc-module">
+
+
+
+<a id="prostate_deid.export"></a>
+    <div class="doc doc-contents first">
+
+        <p>Serialize a Sample's audit trail + flagged regions to disk for review.</p>
+<p>The dashboard reads this format rather than a live Sample object, so a
+pipeline run (which may happen on a headless server, in CI, or on a machine
+without a display) can be reviewed later or elsewhere.</p>
+
+
+
+
+
+
+
+
+
+
+<div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+
+<div class="doc doc-object doc-function">
+
+
+<h2 id="prostate_deid.export.export_review_bundle" class="doc doc-heading">
+            <code class="highlight language-python">export_review_bundle(sample, out_dir)</code>
+
+</h2>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Writes audit.json + one .npy thumbnail per flagged, bbox-bearing entry.</p>
+
+
+<details class="out_dir-layout" open>
+  <summary>out_dir layout</summary>
+  <p>out_dir/audit.json       -- full audit trail, one row per entry
+out_dir/thumbnails/NNN.npy  -- cropped region for flagged entries that
+                               carry a bbox in their <code>detail</code> string</p>
+</details>
+
+    </div>
+
+</div>
+
+
+
+  </div>
+
+    </div>
+
+</div><hr />
+<p><em>This page uses <a href="https://mkdocstrings.github.io/">mkdocstrings</a> syntax. Add
+<code>mkdocstrings[python]</code> to your docs build environment
+(<code>pip install mkdocs mkdocstrings[python]</code>) for it to render docstrings
+automatically; until then, refer to the source directly at
+<a href="https://github.com/drsaqibiqbal/annolib/tree/main/src/prostate_deid"><code>src/prostate_deid/</code></a>.</em></p>
+              
+            </div>
+          </div><footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
+        <a href="../quickstart/" class="btn btn-neutral float-left" title="Quickstart"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../pseudonymization/" class="btn btn-neutral float-right" title="Anonymization vs. Pseudonymization">Next <span class="icon icon-circle-arrow-right"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+          
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="Versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+        <span>
+          <a href="https://github.com/drsaqibiqbal/annolib" class="fa fa-github" style="color: #fcfcfc"> GitHub</a>
+        </span>
+    
+    
+      <span><a href="../quickstart/" style="color: #fcfcfc">&laquo; Previous</a></span>
+    
+    
+      <span><a href="../pseudonymization/" style="color: #fcfcfc">Next &raquo;</a></span>
+    
+  </span>
+</div>
+    <script src="../js/jquery-3.6.0.min.js"></script>
+    <script>var base_url = "..";</script>
+    <script src="../js/theme_extra.js"></script>
+    <script src="../js/theme.js"></script>
+      <script src="../search/main.js"></script>
+    <script>
+        jQuery(function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        });
+    </script>
+
+</body>
+</html>
